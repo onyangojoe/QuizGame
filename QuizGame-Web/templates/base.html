@@ -1,33 +1,27 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Kenyan Quiz Game</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kenyan Quiz Game 🎯</title>
   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
   <div class="container">
     <header>
-      <h1>🇰🇪 Kenyan Quiz Game</h1>
+      <h1>Kenyan Quiz Game 🎯</h1>
     </header>
 
-    <main>
-      {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-          <div class="flash">
-            {% for category, msg in messages %}
-              <div class="flash-{{ category }}">{{ msg }}</div>
-            {% endfor %}
-          </div>
-        {% endif %}
-      {% endwith %}
-      {% block content %}{% endblock %}
-    </main>
+    {% block content %}{% endblock %}
 
     <footer>
-      <small>Made with ❤️ — multiple choice quiz</small>
+      &copy; 2025 Quiz Game. All rights reserved.
     </footer>
   </div>
+
+  <!-- Confetti library -->
+  <script src="{{ url_for('static', filename='confetti.min.js') }}"></script>
+
+  {% block scripts %}{% endblock %}
 </body>
 </html>

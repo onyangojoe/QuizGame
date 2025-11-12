@@ -1,27 +1,45 @@
 {% extends "base.html" %}
+
 {% block content %}
-  <div class="card">
-    <h2>Quiz Results</h2>
-    <p class="result">You scored <strong>{{ score }}</strong> out of <strong>{{ total }}</strong> ({{ percentage }}%)</p>
+<div class="card">
+  <!-- Final Score -->
+  <div class="result">You scored {{ score }} out of {{ total }}</div>
 
-    {% if wrong %}
-      <h3>Questions you got wrong</h3>
-      <ol>
-        {% for item in wrong %}
-          <li>
-            <div class="q">{{ item.q }}</div>
-            <div class="your">Your answer: <strong>{{ item.chosen }}</strong></div>
-            <div class="correct">Correct answer: <strong>{{ item.correct }}</strong></div>
-          </li>
-        {% endfor %}
-      </ol>
-    {% else %}
-      <p class="perfect">🏆 Perfect score — well done!</p>
-    {% endif %}
+  <!-- Confetti for perfect score -->
+  {% if score == total %}
+    <div class="perfect">🎉 Perfect Score! 🎉</div>
+  {% endif %}
 
-    <form action="{{ url_for('restart') }}" method="post" style="display:inline-block;">
-      <button class="btn">Play Again</button>
-    </form>
-    <a class="btn secondary" href="{{ url_for('index') }}">Home</a>
+  <!-- Questions the user got wrong -->
+  {% if incorrect_questions %}
+    <h3>Questions you missed:</h3>
+    <ol>
+      {% for q in incorrect_questions %}
+        <li>
+          <span class="q">{{ q.question }}</span><br>
+          Your answer: <span class="your">{{ q.answer }}</span><br>
+          Correct answer: <span class="correct">{{ q.correct }}</span>
+        </li>
+      {% endfor %}
+    </ol>
+  {% endif %}
+
+  <!-- Play Again Button -->
+  <div class="actions">
+    <a href="{{ url_for('index') }}" class="btn">Play Again 🔄</a>
   </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{% if score == total %}
+<script>
+  // Trigger confetti on perfect score
+  confetti({
+    particleCount: 200,
+    spread: 70,
+    origin: { y: 0.6 }
+  });
+</script>
+{% endif %}
 {% endblock %}

@@ -1,10 +1,62 @@
 {% extends "base.html" %}
+
 {% block content %}
-  <div class="card">
-    <h2>Welcome!</h2>
-    <p>This quiz has <strong>{{ total }}</strong> questions about Kenya.</p>
-    <form action="{{ url_for('start') }}" method="post">
-      <button class="btn" type="submit">Start Quiz</button>
-    </form>
+<div class="card">
+  <!-- Live Score -->
+  <div id="score-display">Score: 0</div>
+
+  <!-- Progress Bar -->
+  <div class="progress-bar-container">
+    <div class="progress-bar" id="progress-bar" style="width: 0%;"></div>
   </div>
+
+  <!-- Question -->
+  <div class="question">🎯 {{ question.text }}</div>
+
+  <!-- Options -->
+  <form id="quiz-form" method="POST">
+    {% for option in question.options %}
+      <label class="option">
+        <input type="radio" name="answer" value="{{ option }}" required>
+        {{ option }}
+      </label>
+    {% endfor %}
+
+    <div class="actions">
+      <button type="submit" class="btn">Submit ✅</button>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // ✅ Variables passed from Flask safely using |tojson
+  let score = {{ score | default(0) | tojson }};
+  let totalQuestions = {{ total_questions | tojson }};
+  let currentIndex = {{ current_index | tojson }};
+
+  const form = document.getElementById('quiz-form');
+  const progressBar = document.getElementById('progress-bar');
+  const scoreDisplay = document.getElementById('score-display');
+
+  form.addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    const selected = form.answer.value;
+
+    // Update live score
+    if (selected === "{{ question.correct }}") {
+      score++;
+    }
+    scoreDisplay.textContent = `Score: ${score}`;
+
+    // Update progress bar
+    currentIndex++;
+    progressBar.style.width = ((currentIndex / totalQuestions) * 100) + "%";
+
+    // Submit form to Flask for next question
+    form.submit();
+  });
+</script>
 {% endblock %}
